@@ -1,13 +1,4 @@
 #!/bin/bash
-# Script for ripping DVDs and BluRay Discs
-# Works on any disc, including copy protected DVDs
-# Meant to work on Morgan's macbook pro, but will work on other macs as well.
-# started 4/24/23, mmorel
-# v1.0
-#   Works with user input of disk drive
-# v.2.0
-#   Assumes the device by looking for "external, phsyical" in the diskutil drive list
-#   Isues unmountDisk option if unmount doesn't work, this helps with non-video DVDs
 
 DEBUG=1
 
@@ -86,7 +77,7 @@ else
     fi
 fi
 
-ddrescue -b 2048 $device "${destDir}/${title}.iso" "${destDir}/${title}.iso.log"
+ddrescue -b $blockSz $device "${destDir}/${title}.iso" "${destDir}/${title}.iso.log"
 
 drutil eject
 

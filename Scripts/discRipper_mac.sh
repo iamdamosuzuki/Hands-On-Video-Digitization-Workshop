@@ -16,27 +16,21 @@ let fError=0
 errorStr="ERROR..."
 blockSz="1024"
 
-let i=0
+diskutil list
 
-#device="/dev/sr2"
+echo -e "Please type in the Device Path (example: /dev/desk4) and press ENTER"
+echo -e "Hint: Check the list of drives above and pick the DVD drive"
+echo -e "Hint: if you can't figure it out you can leave this blank for auto mode"
+read device
+echo -e "Please drag in the destination folder and press ENTER"
+read destDir
+echo -e "Please enter the DVD Title and press ENTER"
+read title
 
-if [ "$#" -ne 2 ]; then
-        echo ""
-        echo "USAGE: $0 <source> MAVIS_Number <destination directory>"
-        echo "Example:>$0 1234567-1-1 /tmp/iso"
-        echo "Remember that your user must have read/write permisson for the destination directory."
-        exit 1
-fi
-
-if ! [[ $1 =~ [0-9]{7}-[0-9]{1}-[0-9]{1} ]]; then
-    echo "WARNING: Please enter a valid MAVIS Number"
-fi
-
-mavisNum="$1"
-device="$1"
-destDir="$2"
 dateStr=`date`
-device=$(diskutil list | grep -A 2 "external, physical" | tail -n 1 | awk '{print $NF}')
+if [[ -z $device ]]; then
+  device=$(diskutil list | grep -A 2 "external, physical" | tail -n 1 | awk '{print $NF}')
+fi
 
 if [[ $device == *"disk"* ]]; then
     echo "Processing disc in device: "$device
@@ -66,7 +60,7 @@ fi
 #title="${mountedStr##*/}"
 
 if (( DEBUG == 1 ));then
-        echo -e "mavisNum =\t$mavisNum"
+        echo -e "mavisNum =\t$title"
         echo -e "device\t=\t$device"
         echo -e "Destination Directory\t=\t$destDir"
         echo -e "date\t=\t$dateStr"
@@ -92,7 +86,7 @@ else
     fi
 fi
 
-ddrescue -b 2048 $device "${destDir}/${mavisNum}.iso" "${destDir}/${mavisNum}.iso.log"
+ddrescue -b 2048 $device "${destDir}/${title}.iso" "${destDir}/${title}.iso.log"
 
 drutil eject
 
